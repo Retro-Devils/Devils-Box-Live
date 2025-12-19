@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Devils Box</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
+    
+    :root{
+      --primary: #ff0000;
+      --primary-dark: #00b8d4;
+      --secondary: #ff0000;
+      --bg: #0a0e12;
+      --card: #0a0e12;
+      --card-hover: #12242a;
+      --text: #ff0000;
+      --text-bright: #ff0000;
+      --text-muted: #ff4500;
+      --border: #1a3540;
+      --glow-blue: 0 0 20px rgba(0,217,255,0.3);
+      --glow-blue-intense: 0 0 30px rgba(0,217,255,0.6), 0 0 40px rgba(0,217,255,0.3);
+      --shadow: 0 10px 40px rgba(0,217,255,0.15);
+      --radius: 4px;
+      --max-width: 1200px;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+body {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  background-color: transparent;
+  background-image: url("https://devilsboxlive.neocities.org/images/backgrounds/background-db-live.png");
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+ position: absolute;
+  overflow-x: hidden;
+  background-attachment: fixed;
+}
+
+    /* Matrix-style background effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,217,255,0.03) 2px, rgba(0,217,255,0.03) 4px);
+      pointer-events: none;
+      z-index: 0;
+      animation: scan 8s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(20px); }
+    }
+
+    /* Glitch effect */
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px var(--secondary), -2px -2px var(--primary); }
+      25% { text-shadow: -2px -2px var(--secondary), 2px 2px var(--primary); }
+      50% { text-shadow: 2px -2px var(--secondary), -2px 2px var(--primary); }
+      75% { text-shadow: -2px 2px var(--secondary), 2px -2px var(--primary); }
+      100% { text-shadow: 2px 2px var(--secondary), -2px -2px var(--primary); }
+    }
+
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0.3; }
+    }
+
+    .app-shell {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: clamp(16px, 4vw, 32px);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Terminal Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--glow-blue);
+      position: relative;
+    }
+
+    .header::before {
+      content: '> SYSTEM ONLINE';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--bg);
+      padding: 0 10px;
+      font-size: 0.75rem;
+      color: var(--secondary);
+      letter-spacing: 2px;
+    }
+    
+    .logo-text h1 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-bright);
+      text-shadow: var(--glow-blue-intense);
+      letter-spacing: 3px;
+      position: relative;
+    }
+
+    .logo-text h1::before {
+      content: '> ';
+      color: var(--secondary);
+      animation: blink 1.5s infinite;
+    }
+    
+    .logo-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      font-weight: 400;
+    }
+
+    .terminal-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      text-shadow: var(--glow-blue);
+      animation: blink 2s infinite;
+    }
+
+    /* Search Terminal */
+    .search-container {
+      position: relative;
+      z-index: 2; /* Add this */
+      margin-bottom: 40px;
+    }
+    
+    .search-wrapper {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-wrapper::before {
+      content: 'SEARCH//';
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      padding: 0 8px;
+      letter-spacing: 2px;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      filter: drop-shadow(var(--glow-blue));
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 16px 20px 16px 52px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: 'Fira Code', monospace;
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--glow-blue);
+      background: #0f1a1f;
+    }
+    
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      padding: 12px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-item::before {
+      content: '●';
+      color: var(--primary);
+      animation: blink 2s infinite;
+    }
+
+    /* App Grid */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .app-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .app-card::after {
+      content: 'ACCESS';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .app-card:hover {
+      transform: translateX(8px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+      background: var(--card-hover);
+    }
+
+    .app-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .app-card:hover::after {
+      opacity: 1;
+    }
+    
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .app-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #000, var(--card));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary);
+      border: none;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 20px rgba(0,217,255,0.1);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .app-icon::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      background: linear-gradient(45deg, transparent 30%, rgba(0,217,255,0.1) 50%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .app-card:hover .app-icon {
+      box-shadow: inset 0 0 30px rgba(0,217,255,0.3), var(--glow-blue);
+      border-color: var(--primary);
+    }
+
+    .app-card:hover .app-icon::after {
+      opacity: 1;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+    
+    .app-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .app-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-bright);
+      letter-spacing: 1px;
+    }
+
+    
+    .app-platform {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .platform-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(0,217,255,0.1);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+    
+    .install-button {
+      padding: 10px 18px;
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: 'Fira Code', monospace;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      z-index: 1;
+    }
+
+    .install-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--primary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+      z-index: -1;
+    }
+
+    .install-button span {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .install-button:hover {
+      color: var(--bg);
+      box-shadow: var(--glow-blue);
+    }
+
+    .install-button:hover::before {
+      transform: scaleX(1);
+    }
+
+    /* Footer Terminal */
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #5fd7ff; /* light blue readable text */
+  font-size: 0.85rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  position: relative;
+  text-shadow: 0 0 6px rgba(95, 215, 255, 0.35);
+}
+
+/* Footer label */
+.footer::before {
+  content: '// DOCUMENTATION';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  padding: 0 10px;
+  font-size: 0.7rem;
+  color: #5fd7ff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(95, 215, 255, 0.5);
+}
+
+/* Footer links */
+.footer a {
+  color: #5fd7ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer a:hover {
+  text-shadow: 0 0 12px rgba(95, 215, 255, 0.7);
+  text-decoration: underline;
+}
+
+/* Footer code blocks */
+.footer code {
+  background: rgba(95, 215, 255, 0.12);
+  padding: 3px 8px;
+  border-radius: 2px;
+  color: #5fd7ff;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+}
+
+
+    .no-results {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+    
+    .no-results-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      opacity: 0.6;
+      filter: drop-shadow(var(--glow-blue));
+    }
+
+    .no-results p::before {
+      content: '> ';
+      color: var(--primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .terminal-icon {
+        align-self: flex-end;
+      }
+      
+      .logo-text h1 {
+        font-size: 1.5rem;
+      }
+
+      .status-bar {
+        font-size: 0.75rem;
+      }
+    }
+    
+    @media (min-width: 1400px) {
+      .app-grid {
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 0;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+      box-shadow: var(--glow-blue);
+    }
+
+    /* Typing cursor animation */
+    @keyframes cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--primary);
+      margin-left: 4px;
+      animation: cursor 1s infinite;
+    }
+    .app-icon img {
+  width: 135%;
+  height: 135%;
+  object-fit: contain;
+}
+    
+  </style>
+  <script>
+let downloadDirHandle = null;
+
+// Load saved folder on startup
+(async () => {
+  if ("storage" in navigator && "getDirectory" in navigator.storage) {
+    try {
+      downloadDirHandle = await navigator.storage.getDirectory();
+    } catch (e) {
+      console.log("Folder not yet selected.");
+    }
+  }
+})();
+
+// Button click
+document.getElementById("pickFolderBtn").addEventListener("click", async () => {
+  try {
+    downloadDirHandle = await window.showDirectoryPicker();
+    document.getElementById("downloadPath").textContent = "DOWNLOAD: CUSTOM FOLDER SET";
+  } catch (err) {
+    alert("Folder selection cancelled.");
+  }
+});
+
+// Example download handler
+async function downloadFile(url, filename) {
+  if (!downloadDirHandle) {
+    alert("Please set a download folder first.");
+    return;
+  }
+
+  const response = await fetch(url);
+  const blob = await response.blob();
+
+  const fileHandle = await downloadDirHandle.getFileHandle(filename, { create: true });
+  const writable = await fileHandle.createWritable();
+
+  await writable.write(blob);
+  await writable.close();
+
+  alert("Downloaded to your selected folder!");
+}
+</script>
+
+</head>
+<body>
+  <div class="app-shell">
+    <header class="header">
+      <div class="logo">
+        <div class="logo-text">
+          <h1>DEVILS BOX<span class="cursor"></span></h1>
+          <p> -- Welcome to Devils Box --</p>
+          <p>-------------------------------------------------------------------------------- </p>
+          <p>*********Devils Box is a app/emu/rom downloader/'store'.-------</p>
+          <p>- Everything you see is free and created/curated by the Retro Devils. </p>
+          <p>- To use for game download please select the system then pick game.</p>
+          <p>- To use for game packs please select "Zipped Packs" then select pack </p>
+          <p>- To use for emus/apps select operating system then select  "OS Name" Emulators .
+          <p>- Currently Devils Box downloads to where you have web downloads set.</p>
+          <p>- On Android Devils Box can only download to your "Downloads " folder</p>
+        </div>
+      </div>
+      <div class="terminal-icon">⬢</div>
+    </header>
+
+    <div class="status-bar">
+      <div class="status-item">CONNECTION: SECURE</div>
+      <div class="status-item">STATUS: ONLINE</div>
+      <div class="status-item">VERSION: 1.1</div>
+    </div>
+
+    <div class="search-container">
+      <div class="search-wrapper">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="search" class="search-input" placeholder="Search Here" id="searchInput" />
+      </div>
+    </div>
+
+    <main>
+<!-------Android--->
+  <a class="app-card" href="systems/android/index.html">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/android-logo.png" alt="Android Logo">
+    </div>
+      <div class="app-title">Android</div>
+    </div>
+  </a>
+<!-------Linux---->
+  <a class="app-card" href="systems/linux/index.html">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/linux-logo.png" alt="Linux Logo">
+    </div>
+    <div class="app-title">Linux</div>
+    </div>
+  </a>
+<!-------Mac---->
+  <a class="app-card" href="systems/mac/index.html">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/mac-logo.png" alt="Mac Logo">
+    </div>
+    <div class="app-title">Mac</div>
+    </div>
+  </a>
+<!-------Windows---->
+  <a class="app-card" href="systems/windows/index.html">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/windows-logo.png" alt="Windows Logo">
+    </div>
+    <div class="app-title">Windows</div>
+    </div>
+  </a>
+<!-------ARTWORK---->
+  <a class="app-card" href="https://devilsboxlive.neocities.org/coomingsoon">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/artwork-logo.png" alt="Artwork Logo">
+    </div>
+    <div class="app-title">Artwork</div>
+    </div>
+  </a>
+<!-------BIOS---->
+  <a class="app-card" href="systems/bios/index.html">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/bios-logo.png" alt="Bios Logo">
+    </div>
+    <div class="app-title">Emulator Bios</div>
+    </div>
+  </a>
+<!-------ZIPPED PACKS ---->
+  <a class="app-card" href="systems/zips.html">
+    <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/zipped-logo.png" alt="Zipped Packs Logo">
+    </div>
+    <div class="app-title">Zipped Packs</div>
+    </div>
+  </a>
+<!----AMIGA---->
+<a class="app-card" href="systems/amiga/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Famiga%2F_inc%2Fsystem.png" alt="Amiga Logo">
+    </div>
+    <div class="app-title">Amiga</div>
+  </div>
+</a>
+<!----ATARI 2600---->
+<a class="app-card" href="systems/atari2600/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fatari2600%2F_inc%2Fsystem.png" alt="Atari2600 Logo">
+    </div>
+    <div class="app-title">Atari 2600</div>
+  </div>
+</a>
+<!----ATARI 5200---->
+<a class="app-card" href="systems/atari5200/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fatari5200%2F_inc%2Fsystem.png" alt="Atari5200 Logo">
+    </div>
+    <div class="app-title">Atari 5200</div>
+  </div>
+</a>
+<!----ATARI 7800---->
+<a class="app-card" href="systems/atari7800/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fatari7800%2F_inc%2Fsystem.png" alt="Atari7800 Logo">
+    </div>
+    <div class="app-title">Atari 7800</div>
+  </div>
+</a>
+<!-----Dreamcast----->
+  <a class="app-card" href="systems/dc/index.html">
+    <div class="app-header">
+      <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fdreamcast%2F_inc%2Fsystem.png" alt="NES Logo">
+      </div>      
+      <div class="app-title">Dreamcast</div>
+    </div>
+<!----GAMEBOY---->
+<a class="app-card" href="systems/gb/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fgb%2F_inc%2Fsystem.png" alt="Gameboy Logo">
+    </div>
+    <div class="app-title">Gameboy</div>
+  </div>
+</a>
+<!----GAMEBOY COLOR---->
+<a class="app-card" href="systems/gbc/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fgbc%2F_inc%2Fsystem.png" alt="Gameboy Color Logo">
+    </div>
+    <div class="app-title">Gameboy Color</div>
+  </div>
+</a>
+<!----GAMEBOY ADVANCE---->
+<a class="app-card" href="systems/gba/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fgba%2F_inc%2Fsystem.png" alt="Gameboy Advance Logo">
+    </div>
+    <div class="app-title">Gameboy Advance</div>
+  </div>
+</a>
+<!-----Gamegear----->
+  <a class="app-card" href="systems/gamegear/index.html">
+    <div class="app-header">
+      <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fgamegear%2F_inc%2Fsystem.png" alt="Gamegear Logo">
+      </div>      
+      <div class="app-title">Gamegear</div>
+    </div>
+<!----MEGADRIVE---->
+<a class="app-card" href="systems/megadrive/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fmegadrive%2F_inc%2Fsystem.png" alt="Megadrive Logo">
+    </div>
+    <div class="app-title">Megadrive</div>
+  </div>
+</a>
+<!----NES---->
+<a class="app-card" href="systems/nes/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fnes%2F_inc%2Fsystem.png" alt="NES Logo">
+    </div>
+    <div class="app-title">NES</div>
+  </div>
+</a>
+<!----N64---->
+<a class="app-card" href="systems/n64/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fn64%2F_inc%2Fsystem.png" alt="N64 Logo">
+    </div>
+    <div class="app-title">N64</div>
+  </div>
+</a>
+<!----MASTERSYSTEM---->
+<a class="app-card" href="systems/mastersystem/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fmastersystem%2F_inc%2Fsystem.png" alt="Mastersystem Logo">
+    </div>
+    <div class="app-title">Sega Mastersystem</div>
+  </div>
+</a>
+<!----MODEL3---->
+<a class="app-card" href="systems/model3/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fmodel3%2F_inc%2Fsystem.png" alt="Model3 Logo">
+    </div>
+    <div class="app-title">Model3</div>
+  </div>
+</a>
+<!----PS1---->
+<a class="app-card" href="systems/psx/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fpsx%2F_inc%2Fsystem.png" alt="PS2 Logo">
+    </div>
+    <div class="app-title">Playstation</div>
+  </div>
+</a>
+<!----PS2---->
+<a class="app-card" href="systems/ps2/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="images/logos/ps2-logo.png" alt="PS2 Logo">
+    </div>
+    <div class="app-title">Playstation 2</div>
+  </div>
+</a>
+<!----SNES---->
+<a class="app-card" href="systems/saturn/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fsaturn%2F_inc%2Fsystem.png" alt="Saturn Logo">
+    </div>
+    <div class="app-title">Sega Saturn</div>
+  </div>
+</a>
+<!----SNES---->
+<a class="app-card" href="systems/snes/index.html">
+  <div class="app-header">
+    <div class="app-icon">
+      <img src="https://archive.org/download/devils-themes/EmStation-Themes/NEON-IBAD.zip/NEON-IBAD%2Fsnes%2F_inc%2Fsystem.png" alt="SNES Logo">
+    </div>
+    <div class="app-title">Super NES</div>
+  </div>
+</a>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="no-results" id="noResults" style="display: none;">
+        <div class="no-results-icon">⚠</div>
+        <p>ERROR: No matching packages found</p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      
+      <a href="https://oasis.myguyinthechair.com/s/retro-devils-support/" target="_blank" rel="noopener noreferrer">Click here to Report any issues to the Devil's Dungeon group in the Oasis</a>.
+    </footer>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const appGrid = document.getElementById('appGrid');
+    const noResults = document.getElementById('noResults');
+    const cards = Array.from(appGrid.querySelectorAll('.app-card'));
+
+    function filterApps() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const title = card.querySelector('.app-title')?.textContent?.toLowerCase() || '';
+        const platform = card.querySelector('.app-platform')?.textContent?.toLowerCase() || '';
+        const matches = (title + ' ' + platform).includes(query);
+        
+        card.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+      });
+
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      appGrid.style.display = visibleCount === 0 ? 'none' : 'grid';
+    }
+
+    searchInput.addEventListener('input', filterApps);
+  </script>
+</body>
+
+</html>
